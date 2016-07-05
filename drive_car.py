@@ -6,7 +6,7 @@ import curses
 import logging
 import time
 
-from gamepad_server import WebGamepadServer
+from web_gamepad.gamepad_server import WebGamepadServer
  
 GPIO.setmode(GPIO.BOARD)
   
@@ -27,98 +27,104 @@ GPIO.setup(Motor2B,GPIO.OUT)
 GPIO.setup(Motor2E,GPIO.OUT)
       
 
+
+active_keys = {}
+
 def forward():
+    print('going_forward')
     GPIO.output(Motor1A,GPIO.HIGH)
     GPIO.output(Motor1B,GPIO.LOW)
     GPIO.output(Motor1E,GPIO.HIGH)
-      
+
     GPIO.output(Motor2A,GPIO.HIGH)
     GPIO.output(Motor2B,GPIO.LOW)
     GPIO.output(Motor2E,GPIO.HIGH)
-
-def right():
-    if is_back:
-        left()
-        return
-    GPIO.output(Motor1A,GPIO.HIGH)
-    GPIO.output(Motor1B,GPIO.LOW)
-    GPIO.output(Motor1E,GPIO.HIGH)
-      
-    GPIO.output(Motor2A,GPIO.LOW)
-    GPIO.output(Motor2B,GPIO.HIGH)
-    GPIO.output(Motor2E,GPIO.HIGH)
-
-def left():
-    if is_back:
-        right()
-        return
-
-    GPIO.output(Motor1A,GPIO.LOW)
-    GPIO.output(Motor1B,GPIO.HIGH)
-    GPIO.output(Motor1E,GPIO.HIGH)
-      
-    GPIO.output(Motor2A,GPIO.HIGH)
-    GPIO.output(Motor2B,GPIO.LOW)
-    GPIO.output(Motor2E,GPIO.HIGH)
- 
- 
 
 def backward():
     print("Going backwards")
     GPIO.output(Motor1A,GPIO.LOW)
     GPIO.output(Motor1B,GPIO.HIGH)
     GPIO.output(Motor1E,GPIO.HIGH)
-          
+
     GPIO.output(Motor2A,GPIO.LOW)
     GPIO.output(Motor2B,GPIO.HIGH)
     GPIO.output(Motor2E,GPIO.HIGH)
- 
- 
-def stop():
-    if is_back or is_up or is_left or is_right:
+
+def rotate_right():
+    if 'down' in active_keys:
+        rotate_left()
         return
-    GPIO.output(Motor1E,GPIO.LOW)
+
+    print('rotate_right')
+    GPIO.output(Motor1A,GPIO.HIGH)
+    GPIO.output(Motor1B,GPIO.LOW)
+    GPIO.output(Motor1E,GPIO.HIGH)
+
+    GPIO.output(Motor2A,GPIO.LOW)
+    GPIO.output(Motor2B,GPIO.HIGH)
+    GPIO.output(Motor2E,GPIO.HIGH)
+
+def turn_right():
+    if 'down' in active_keys:
+        turn_left()
+        return
+    elif 'up' not in active_keys:
+        rotate_right()
+    print('turn_right')
     GPIO.output(Motor2E,GPIO.LOW)
  
-is_up = False
-is_back = False
-is_left = False
-is_right = False
+
+def rotate_left():
+    if 'down' in active_keys:
+        rotate_right()
+        return
+    print('rotate_left')
+    GPIO.output(Motor1A,GPIO.LOW)
+    GPIO.output(Motor1B,GPIO.HIGH)
+    GPIO.output(Motor1E,GPIO.HIGH)
+
+    GPIO.output(Motor2A,GPIO.HIGH)
+    GPIO.output(Motor2B,GPIO.LOW)
+    GPIO.output(Motor2E,GPIO.HIGH)
+
+def turn_left():
+    if 'down' in active_keys:
+        turn_right()
+        return
+    elif 'up' not in active_keys:
+        rotate_left()
+    print('turn left')
+    GPIO.output(Motor1E,GPIO.LOW)
+
+ 
+def stop():
+    print('stopped')
+    GPIO.output(Motor1E,GPIO.LOW)
+    GPIO.output(Motor2E,GPIO.LOW)
+
+def refresh_engines():
+    if 'up' in active_keys:
+        forward()
+    if 'left' in active_keys:
+        turn_left()
+    elif 'right' in active_keys:
+        turn_right()
+    if not active_keys:
+        stop()
+
 
 def event(event):
     key = event.get('title')
     action = event.get('action')
-    if key  == 'up':
-        if action == 'key_down':
-            is_up = True
-            forward()
-        elif action == 'key_up':
-            is_up = False
-            stop()
-    if key  == 'down':
-        if action == 'key_down':
-            is_back = True
-            backward()
-        elif action == 'key_up':
-            is_back = False
-            stop()
-    if key  == 'left':
-        if action == 'key_down':
-            is_left = True
-            left()
-        elif action == 'key_up':
-            is_left = False
-            stop()
-    if key  == 'right':
-        if action == 'key_down':
-            is_right = True
-            right()
-        elif action == 'key_up':
-            is_right = False
-            stop()
-           
+
+    if action == 'key_down':
+        active_keys[key] = 1
+    elif action == 'key_up':
+        del active_keys[key]
+
+    refresh_engines()
+
     print(event)
-    print(type(event))
 
 def main(stdscr):
     # do not wait for input when calling getch
@@ -159,7 +165,6 @@ def main(stdscr):
         stdscr.move(0, 0)
 
 
-static_path='static'
 
 if __name__ == '__main__':
     try:

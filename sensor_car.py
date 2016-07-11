@@ -2,6 +2,7 @@
 
 import asyncio
 import logging
+import RPi.GPIO as GPIO
 
 from web_gamepad.gamepad_server import WebGamepadServer
 
@@ -16,7 +17,7 @@ ALL_SENSORS = [
 
 @asyncio.coroutine
 def process_sensors():
-    sensor = GPIODistance(*ALL_SENSORS[0])
+    sensor = GPIODistance(*ALL_SENSORS[1])
     print('sensors setup')
     yield from sensor.setup()
     print('distance loop')
@@ -34,7 +35,7 @@ if __name__ == '__main__':
         loop = asyncio.get_event_loop()
 
         server.start()
-        asyncio.ensure_future(process_sensors(), loop=loop)
+        asyncio.async(process_sensors(), loop=loop)
         loop.run_forever()
 #        main()
     finally:

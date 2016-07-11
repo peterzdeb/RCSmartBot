@@ -113,7 +113,7 @@ def refresh_engines():
         stop()
 
 
-def event(event):
+def car_motion_event(event):
     key = event.get('title')
     action = event.get('action')
 
@@ -168,10 +168,9 @@ def main(stdscr):
 
 if __name__ == '__main__':
     try:
-        server = WebGamepadServer
         logging.basicConfig(level=logging.DEBUG)
         log = logging.getLogger('WebGamepad')
-        server = WebGamepadServer(host='0.0.0.0', port=8000, notify_callback=event)
+        server = WebGamepadServer(host='0.0.0.0', port=8000, notify_callback=car_motion_event)
         loop = asyncio.get_event_loop()
         server.start()
         loop.run_forever()

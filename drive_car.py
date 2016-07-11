@@ -51,10 +51,6 @@ def backward():
     GPIO.output(Motor2E,GPIO.HIGH)
 
 def rotate_right():
-    if 'down' in active_keys:
-        rotate_left()
-        return
-
     print('rotate_right')
     GPIO.output(Motor1A,GPIO.HIGH)
     GPIO.output(Motor1B,GPIO.LOW)
@@ -64,20 +60,15 @@ def rotate_right():
     GPIO.output(Motor2B,GPIO.HIGH)
     GPIO.output(Motor2E,GPIO.HIGH)
 
-def turn_right():
-    if 'down' in active_keys:
-        turn_left()
-        return
-    elif 'up' not in active_keys:
+def turn_right(redirected=False):
+    if 'up' not in active_keys and 'down' not in active_keys:
         rotate_right()
+        return
     print('turn_right')
     GPIO.output(Motor2E,GPIO.LOW)
  
 
 def rotate_left():
-    if 'down' in active_keys:
-        rotate_right()
-        return
     print('rotate_left')
     GPIO.output(Motor1A,GPIO.LOW)
     GPIO.output(Motor1B,GPIO.HIGH)
@@ -87,12 +78,10 @@ def rotate_left():
     GPIO.output(Motor2B,GPIO.LOW)
     GPIO.output(Motor2E,GPIO.HIGH)
 
-def turn_left():
-    if 'down' in active_keys:
-        turn_right()
-        return
-    elif 'up' not in active_keys:
+def turn_left(redirected=False):
+    if 'up' not in active_keys and 'down' not in active_keys:
         rotate_left()
+        return
     print('turn left')
     GPIO.output(Motor1E,GPIO.LOW)
 
@@ -105,6 +94,8 @@ def stop():
 def refresh_engines():
     if 'up' in active_keys:
         forward()
+    elif 'down' in active_keys:
+        backward()
     if 'left' in active_keys:
         turn_left()
     elif 'right' in active_keys:
@@ -121,6 +112,7 @@ def car_motion_event(event):
         active_keys[key] = 1
     elif action == 'key_up':
         del active_keys[key]
+    print('keys: %s' % active_keys.keys())
 
     refresh_engines()
 

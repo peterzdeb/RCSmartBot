@@ -110,7 +110,8 @@ def car_motion_event(**event_data):
     if action_type == 'key_down':
         active_keys[action] = 1
     elif action_type == 'key_up':
-        del active_keys[action]
+        if action in active_keys:
+            del active_keys[action]
     print('keys: %s' % active_keys.keys())
 
     refresh_engines()

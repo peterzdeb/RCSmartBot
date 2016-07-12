@@ -2,6 +2,7 @@
 
 import asyncio
 import logging
+import numpy as np
 import RPi.GPIO as GPIO
 
 from follow_strategy import StickyDistFollower
@@ -15,6 +16,9 @@ ALL_SENSORS = [
     (33, 31),
     (11, 7),
 ]
+
+def reject_outliers(data, m=2):
+    return data[abs(data - np.mean(data)) < m * np.std(data)]
 
 @asyncio.coroutine
 def process_sensors():
@@ -32,8 +36,10 @@ def process_sensors():
         for sensor in sensors:
             dist = yield from sensor.get_distance()
             dists.append(float(dist))
-            yield from asyncio.sleep(0.1)
+            yield from asyncio.sleep(0.08)
+        print(dists)
         yield from strategy.process_distances(dists)
+
 
 
 if __name__ == '__main__':

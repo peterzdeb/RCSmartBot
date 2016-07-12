@@ -4,6 +4,7 @@ import asyncio
 import logging
 import RPi.GPIO as GPIO
 
+from follow_strategy import StickyDistFollower
 from web_gamepad.gamepad_server import WebGamepadServer
 
 from drive_car import car_motion_event
@@ -25,13 +26,14 @@ def process_sensors():
     for sensor in sensors:
         yield from sensor.setup()
     print('distance loop')
+    strategy = StickyDistFollower(car_motion_event)
     while True:
         dists = []
         for sensor in sensors:
             dist = yield from sensor.get_distance()
             dists.append(float(dist))
             yield from asyncio.sleep(0.1)
-        print(dists)
+        yield from strategy.process_distances(dists)
 
 
 if __name__ == '__main__':

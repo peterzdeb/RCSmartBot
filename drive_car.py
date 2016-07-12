@@ -103,20 +103,18 @@ def refresh_engines():
     if not active_keys:
         stop()
 
+def car_motion_event(**event_data):
+    action = event_data.get('action')
+    action_type = event_data.get('type')
 
-def car_motion_event(event):
-    key = event.get('title')
-    action = event.get('action')
-
-    if action == 'key_down':
-        active_keys[key] = 1
-    elif action == 'key_up':
-        del active_keys[key]
+    if action_type == 'key_down':
+        active_keys[action] = 1
+    elif action_type == 'key_up':
+        del active_keys[action]
     print('keys: %s' % active_keys.keys())
 
     refresh_engines()
-
-    print(event)
+    print(event_data)
 
 def main(stdscr):
     # do not wait for input when calling getch

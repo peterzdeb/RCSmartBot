@@ -17,14 +17,21 @@ ALL_SENSORS = [
 
 @asyncio.coroutine
 def process_sensors():
-    sensor = GPIODistance(*ALL_SENSORS[1])
+    sensors = []
+    for ports in ALL_SENSORS:
+        sensors.append(GPIODistance(*ports))
+
     print('sensors setup')
-    yield from sensor.setup()
+    for sensor in sensors:
+        yield from sensor.setup()
     print('distance loop')
     while True:
-        distance = yield from sensor.get_distance()
-        print("DIST: %.5f" % distance)
-        yield from asyncio.sleep(1)
+        dists = []
+        for sensor in sensors:
+            dist = yield from sensor.get_distance()
+            dists.append(float(dist))
+            yield from asyncio.sleep(0.1)
+        print(dists)
 
 
 if __name__ == '__main__':

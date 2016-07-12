@@ -16,7 +16,7 @@ class GPIODistance(object):
         GPIO.setmode(GPIO.BOARD)
         GPIO.setup(self.__trig, GPIO.OUT, initial=GPIO.LOW)
         GPIO.setup(self.__echo, GPIO.IN)
-        yield from asyncio.sleep(2)
+        yield from asyncio.sleep(0.5)
 
     @asyncio.coroutine
     def get_distance(self):

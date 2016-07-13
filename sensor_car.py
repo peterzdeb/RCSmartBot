@@ -36,7 +36,7 @@ def process_sensors():
         for sensor in sensors:
             dist = yield from sensor.get_distance()
             dists.append(float(dist))
-            yield from asyncio.sleep(0.08)
+            yield from asyncio.sleep(0.06)
         print(dists)
         yield from strategy.process_distances(dists)
 

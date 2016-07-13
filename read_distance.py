@@ -37,9 +37,9 @@ class GPIODistance(object):
         
         val = (end-start)*340/2
         self.__history.append(val)
-        data = self.__history[len(self.__history)-3:-1]
+        data = self.__history[len(self.__history)-10:-1]
 
-        if val <  np.mean(data) - 2 * np.std(data):
+        if val <  np.mean(data) - 1 * np.std(data):
             print('filtered outlier !!!!!!!!!!!!!!!!! --- %s' % val)
             return self.__last_val
         return val

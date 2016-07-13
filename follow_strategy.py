@@ -6,13 +6,16 @@ class StickyDistFollower(object):
     def __init__(self, event_callback):
         self.__event_callback = event_callback
         self.__locked = False
+        self.__moving = False
 
     @asyncio.coroutine
     def process_distances(self, distances):
         min_dist = min(distances)
         print(min_dist)
-        if min_dist < 0.2 or min_dist > 0.8:
-            self.__event_callback(action='down', type='key_up')
+        if (min_dist < 0.2 or min_dist > 0.8):
+            if self.__moving:
+                self.__event_callback(action='down', type='key_up')
+                self.__moving = False
         elif min_dist < 0.8:
             yield from self.__start_following(distances)
 
@@ -29,6 +32,7 @@ class StickyDistFollower(object):
     def __move_forward(self):
 #        if self.__locked:
 #            return
+        self.__moving = True
         self.__event_callback(action='down', type='key_down')
         #asyncio.sleep(0.3)
         #self.__event_callback(action='up', type='key_up')

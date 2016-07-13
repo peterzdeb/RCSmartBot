@@ -19,29 +19,30 @@ class GPIODistance(object):
         GPIO.setmode(GPIO.BOARD)
         GPIO.setup(self.__trig, GPIO.OUT, initial=GPIO.LOW)
         GPIO.setup(self.__echo, GPIO.IN)
-        yield from asyncio.sleep(0.5)
+        yield from asyncio.sleep(2)
 
     @asyncio.coroutine
     def get_distance(self):
         GPIO.output(self.__trig, GPIO.HIGH)
-        asyncio.sleep(0.000015)
+        time.sleep(0.00015)
         GPIO.output(self.__trig, GPIO.LOW)
         start = time.time()
-        while not GPIO.input(self.__echo):
-            if time.time() - start > 0.1:
-                return 5
+        while GPIO.input(self.__echo) == 0:
+            if time.time() - start > 0.003:
+                return self.__last_val
         start = time.time()
-        while GPIO.input(self.__echo):
+        while GPIO.input(self.__echo) == 1:
             pass
         end = time.time()
         
-        val = (end-start)*340/2
+        val = round((end-start)*340/2, 4)
         self.__history.append(val)
-        data = self.__history[len(self.__history)-10:-1]
+        del self.__history[:-10]#len(self.__history)-10:-1]
 
-        if val <  np.mean(data) - 1 * np.std(data):
+        if val <  np.mean(self.__history) - 3 * np.std(self.__history):
             print('filtered outlier !!!!!!!!!!!!!!!!! --- %s' % val)
             return self.__last_val
+        self.__last_val = val
         return val
 
 

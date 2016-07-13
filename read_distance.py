@@ -23,8 +23,8 @@ class GPIODistance(object):
         GPIO.output(self.__trig, GPIO.HIGH)
         asyncio.sleep(0.000015)
         GPIO.output(self.__trig, GPIO.LOW)
-        while not GPIO.input(self.__echo):
-            pass
+        #while not GPIO.input(self.__echo):
+        #    pass
         start = time.time()
         while GPIO.input(self.__echo):
             pass

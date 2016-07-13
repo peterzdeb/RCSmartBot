@@ -3,6 +3,7 @@
 import aiofiles
 import asyncio
 import logging
+import numpy as np
 import RPi.GPIO as GPIO
 
 from follow_strategy import StickyDistFollower
@@ -17,8 +18,6 @@ ALL_SENSORS = [
     (11, 7),
 ]
 
-
-
 @asyncio.coroutine
 def process_sensors():
     sensors = []
@@ -30,6 +29,13 @@ def process_sensors():
         yield from sensor.setup()
     print('distance loop')
     strategy = StickyDistFollower(car_motion_event)
+    while True:
+        dists = []
+        for sensor in sensors:
+            dist = yield from sensor.get_distance()
+            dists.append(float(dist))
+            yield from asyncio.sleep(0.1)
+        yield from strategy.process_distances(dists)
 
     f = yield from aiofiles.open('actions.log', mode='w+')
     try:

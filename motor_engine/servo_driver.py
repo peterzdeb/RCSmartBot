@@ -1,0 +1,45 @@
+import asyncio
+import logging
+
+from Adafruit_PCA9685.PCA9685 import PCA9685
+
+
+class MockPWM():
+    def set_pwm(self, channel, on, off):
+        logging.debug('Servo %d: changing position to %s', channel, off)
+
+    def set_pwm_freq(self, *args, **kwargs):
+        pass
+
+
+class ServoDriver(object):
+
+    def __init__(self, channel=0, min_position=150, max_position=600):
+        self.__channel = channel
+        self.step_position = min_position + (max_position - min_position) / 2
+        self.min_position = min_position
+        self.max_position = max_position
+        try:
+            self.pwm = PCA9685()
+            self.pwm.set_pwm_freq(60)
+        except Exception as e:
+            logging.exception('Failed to initialize Servo Driver: %s', e)
+            self.pwm = MockPWM()
+
+    def turn_right(self, step=10):
+        self.step_position = min(self.max_position, self.step_position + step)
+        self.pwm.set_pwm(self.__channel, 0, self.step_position)
+
+    def turn_left(self, step=10):
+        self.step_position = max(self.min_position, self.step_position - step)
+        self.pwm.set_pwm(self.__channel, 0, self.step_position)
+
+    def set_servo_pulse(self, channel, pulse):
+        pulse_length = 1000000    # 1,000,000 us per second
+        pulse_length //= 60       # 60 Hz
+        print('{0}us per period'.format(pulse_length))
+        pulse_length //= 4096     # 12 bits of resolution
+        print('{0}us per bit'.format(pulse_length))
+        pulse *= 1000
+        pulse //= pulse_length
+        self.pwm.set_pwm(channel, 0, pulse)

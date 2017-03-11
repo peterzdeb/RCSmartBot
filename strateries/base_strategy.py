@@ -7,6 +7,9 @@ class BaseRobotStrategy(object):
         self.active_actions = {}
         self.log_data = {}
 
+    def on_stop(self):
+        pass
+
     def on_forward(self, active=True):
         pass
 
@@ -21,7 +24,7 @@ class BaseRobotStrategy(object):
 
     @asyncio.coroutine
     def sensor_handler(self, name, data):
-        print('WARNING NotImplemented: Sensor %s, data=%s' % (name, data))
+        print('WARNING NotImplemented: Sensor "%s", data=%s' % (name, data))
 
     @asyncio.coroutine
     def event_handler(self, **event_data):

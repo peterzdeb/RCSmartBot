@@ -1,10 +1,10 @@
 import asyncio
 
 from motor_engine.motor_driver import MotorDriver, DualMotorDriver
-from .motorized_robot import DualMotorRobotStrategy
+from .base_strategy import BaseRobotStrategy
 
 
-class StickyDistFollower(DualMotorRobotStrategy):
+class StickyDistFollower(BaseRobotStrategy):
 
     def __init__(self, log=None):
         super(StickyDistFollower, self).__init__()
@@ -12,7 +12,6 @@ class StickyDistFollower(DualMotorRobotStrategy):
         self.__moving = False
         self.__log = log
         self.distances = {}
-
 
     def sensor_handler(self, name, data):
         yield from self.recalculate_distances(data)

@@ -3,6 +3,7 @@ import asyncio
 from motor_engine.motor_driver import MotorDriver, DualMotorDriver
 from motor_engine.servo_driver import ServoDriver
 from .base_strategy import BaseRobotStrategy
+from .dist_follower import StickyDistFollower
 
 
 class DualMotorRobotStrategy(BaseRobotStrategy):
@@ -65,7 +66,7 @@ class DualMotorRobotStrategy(BaseRobotStrategy):
             self.motor.stop()
 
 
-class MotorizedSteeringRobotStrategy(BaseRobotStrategy):
+class MotorizedSteeringRobotStrategy(StickyDistFollower):
 
     def __init__(self, log=None):
         super(MotorizedSteeringRobotStrategy, self).__init__()

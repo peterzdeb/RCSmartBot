@@ -13,6 +13,7 @@ class SerialSensor(BaseSensorDevice):
     @asyncio.coroutine
     def read(self):
         data = yield from self._fd.readline()
+        data = data.replace('"', "'")
         data = json.loads(data)
 
         measurements = []

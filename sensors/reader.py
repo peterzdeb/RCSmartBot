@@ -17,14 +17,18 @@ class SensorsReader(object):
         for sensor in self.sensors:
             yield from sensor.setup()
 
-        f = yield from aiofiles.open('actions.log', mode='w+')
         try:
             while True:
                 for sensor in self.sensors:
                     data = yield from sensor.read()
-                    yield from self.reader_callback('mocked_name', data)
+                    yield from self.reader_callback(type(sensor), data)
         finally:
-            yield from f.close()
+            yield from self.stop()
 
     def register_handler(self, callback):
         self.reader_callback = callback
+        
+    @asyncio.coroutine
+    def stop(self):
+        for sensor in self.sensors:
+            sensor.close()

@@ -5,6 +5,7 @@ from web_gamepad.gamepad_server import WebGamepadServer
 
 from RPi import GPIO
 from sensors.distance import GPIODistance
+from sensors.serial_sensor import SerialSensor
 from sensors.reader import SensorsReader
 import strateries
 from strateries.motorized_robot import MotorizedSteeringRobotStrategy
@@ -22,8 +23,9 @@ if __name__ == '__main__':
         (11, 7),
     ]
     sensors_reader = SensorsReader()
-    for port_trig, port_echo in DISTANCE_SENSORS:
-        sensors_reader.add_sensor(GPIODistance(port_trig, port_echo))
+    sensors_reader.add_sensor(SerialSensor('/dev/ttyUSB0'))
+    #for port_trig, port_echo in DISTANCE_SENSORS:
+    #    sensors_reader.add_sensor(GPIODistance(port_trig, port_echo))
     sensors_reader.register_handler(strategy.sensor_handler)
 
     try:

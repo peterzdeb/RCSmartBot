@@ -70,13 +70,13 @@ class MotorizedSteeringRobotStrategy(BaseRobotStrategy):
     def __init__(self, log=None):
         super(MotorizedSteeringRobotStrategy, self).__init__()
         self.loop = asyncio.get_event_loop()
-        self.initial_step = 20
-        self.steering_tick = 0.5
+        self.initial_step = 30
+        self.steering_tick = 0.1
 
         self.turning_left = False
         self.turning_right = False
 
-        self.motor = MotorDriver(19, 21, 23)
+        self.motor = MotorDriver(16, 18, 22)
         self.steer = ServoDriver(0)
 
     @asyncio.coroutine
@@ -121,7 +121,7 @@ class MotorizedSteeringRobotStrategy(BaseRobotStrategy):
         step = self.initial_step
         while self.turning_left:
             self.steer.turn_left(step)
-            step *= 2
+            #step += step
             yield from asyncio.sleep(self.steering_tick)
 
     @asyncio.coroutine
@@ -129,5 +129,5 @@ class MotorizedSteeringRobotStrategy(BaseRobotStrategy):
         step = self.initial_step
         while self.turning_right:
             self.steer.turn_right(step)
-            step *= 2
+            #step += step
             yield from asyncio.sleep(self.steering_tick)

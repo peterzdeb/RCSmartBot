@@ -8,16 +8,21 @@ from .base_sensor import BaseSensorDevice
 class SerialSensor(BaseSensorDevice):
     @asyncio.coroutine
     def setup(self):
-        self._fd = yield from aiofiles.open(self.sensor_address)
+        self._fd = yield from aiofiles.open(self.sensor_address, 'rb')
 
     @asyncio.coroutine
     def read(self):
         data = yield from self._fd.readline()
-        data = data.replace('"', "'")
-        data = json.loads(data)
-
+        print(data)
+        data = data.decode('utf8', 'replace')
+        data = data.replace("'", '"').replace('}{', "}\n{")
+        
         measurements = []
-        for sensor_type, records in data.items():
-            measurements.append((sensor_type, list(records)))
-            print("Received sensor data: %s", str(data))
+        for record in data.split('\n'):
+            if not record.strip():
+                continue
+            print("Reading JSON from serial sensor: %s" % record)
+            data_dict = json.loads(record)
+            for sensor_type, records in data_dict.items():
+                measurements.append((sensor_type, list(records)))
         return measurements

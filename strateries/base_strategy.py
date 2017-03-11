@@ -21,7 +21,7 @@ class BaseRobotStrategy(object):
 
     @asyncio.coroutine
     def sensor_handler(self, name, data):
-        raise NotImplementedError
+        print('WARNING NotImplemented: Sensor %s, data=%s' % (name, data))
 
     @asyncio.coroutine
     def event_handler(self, **event_data):

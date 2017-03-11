@@ -21,6 +21,7 @@ class SensorsReader(object):
             while True:
                 for sensor in self.sensors:
                     data = yield from sensor.read()
+                    print("Sensor callback %s (%s)" % (type(sensor), data))
                     yield from self.reader_callback(type(sensor), data)
         finally:
             yield from self.stop()

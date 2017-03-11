@@ -22,7 +22,11 @@ class SerialSensor(BaseSensorDevice):
             if not record.strip():
                 continue
             print("Reading JSON from serial sensor: %s" % record)
-            data_dict = json.loads(record)
+            try:
+                data_dict = json.loads(record)
+            except ValueError:
+                print("Skipping malformed data: %s", record)
+                continue
             for sensor_type, records in data_dict.items():
                 measurements.append((sensor_type, list(records)))
         return measurements

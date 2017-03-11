@@ -7,15 +7,15 @@ from RPi import GPIO
 from sensors.distance import GPIODistance
 from sensors.serial_sensor import SerialSensor
 from sensors.reader import SensorsReader
-import strateries
-from strateries.motorized_robot import MotorizedSteeringRobotStrategy
+import strategies
+from strategies.dist_follower import StickyDistFollower
 
 
 if __name__ == '__main__':
     logging.basicConfig(level=logging.DEBUG,
-                        format='%(asctime)s %(levelname)s %(module)s.%(funcName)s %(message)s')
+                        format='%(asctime)s %(name)s %(levelname)s %(module)s.%(funcName)s %(message)s')
 
-    strategy = strateries.select_strategy(MotorizedSteeringRobotStrategy)
+    strategy = strategies.select_strategy(StickyDistFollower)
 
     DISTANCE_SENSORS = [
         (37, 35),

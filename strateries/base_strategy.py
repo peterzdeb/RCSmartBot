@@ -56,7 +56,5 @@ class BaseRobotStrategy(object):
     @asyncio.coroutine
     def log(self):
 #        print('store_logs: %s' % self.__log_data)
-        data = ','.join(map(str, self.__log_data.get('dists', [0,0,0])))
-        data += ',' + self.__log_data.get('action', '') + "\n"
-        if self.__log:
-            yield from self.__log.write(data)
+        data = ','.join(map(str, self.log_data.get('dists', [0,0,0])))
+        data += ',' + self.log_data.get('action', '') + "\n"

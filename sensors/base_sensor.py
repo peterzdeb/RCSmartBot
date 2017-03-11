@@ -1,4 +1,5 @@
 import asyncio
+import json
 
 
 class BaseSensorDevice(object):
@@ -16,10 +17,7 @@ class BaseSensorDevice(object):
 
     @asyncio.coroutine
     def read(self):
-        data = yield from self._fd.readline()
-        data = data.encode('utf-8')
-        print("Received sensor data: %s", data)
-        return data
+        pass
 
     @asyncio.coroutine
     def close(self):

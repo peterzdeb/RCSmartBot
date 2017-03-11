@@ -16,7 +16,9 @@ class BaseSensorDevice(object):
 
     @asyncio.coroutine
     def read(self):
-        yield from self._fd.readline()
+        data = yield from self._fd.readline()
+        print("Received sensor data: %s", data)
+        return data
 
     @asyncio.coroutine
     def close(self):

@@ -37,7 +37,7 @@ class StickyDistFollower(BaseRobotStrategy):
         if min_dist < 10:
             logger.info('Criticaly close to obstacle (%s). Emergency stopping...', distances)
             yield from self.on_stop()
-        elif min_dist < 20:
+        elif self.motor.moving_forward and min_dist < 20:
             logger.info('Trying to overcome obstacle (%s)...', distances)
             yield from self.__start_relocating(distances)
         elif min_dist < 100:
@@ -56,9 +56,11 @@ class StickyDistFollower(BaseRobotStrategy):
         if dists[0] < dists[2] and dists[2] >= 10:
             trace_log.info('Relocating lefts at %s', dists)
             yield from self.on_left(progress=100)
+            yield from self.on_left(progress=100, active=False)
         elif dists[0] >= dists[2] and dists[0] >= 10:
             trace_log.info('Relocating rights at %s', dists)
             yield from self.on_right(progress=100)
+            yield from self.on_left(progress=100, active=False)
         #yield from self.on_backward()
 
     @asyncio.coroutine

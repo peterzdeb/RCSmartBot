@@ -53,6 +53,15 @@ class MotorDriver(object):
         logger.debug('Motor %d: Stopped', self._enable)
 
     @property
+    def moving_forward(self):
+        return self.run_mode == MOTOR_FORWARD
+
+
+    @property
+    def moving_backward(self):
+        return self.run_mode == MOTOR_BACKWARD
+
+    @property
     def stopped(self):
         return self.run_mode == MOTOR_STOPPED
 

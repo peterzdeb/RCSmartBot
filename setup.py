@@ -3,8 +3,8 @@ from distutils.core import setup
 setup(
     name='RCSmartBot',
     version='',
-    packages=['', 'sensors', 'strategies', 'motor_engine'],
-    package_dir={'': 'smart_bot'},
+    packages=['', 'smart_bot'],
+    package_dir={'': 'src'},
     url='',
     license='',
     author='Petro Zdeb',

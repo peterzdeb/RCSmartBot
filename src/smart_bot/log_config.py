@@ -12,7 +12,6 @@ LOG_CONFIG = {
     'version': 1,
     'disable_existing_loggers': False,
     'root': {
-        'level': logging.getLevelName(APP_LOG_LEVEL),
         'handlers': ['console', 'default'],
     },
     'formatters': {

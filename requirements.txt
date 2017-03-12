@@ -2,9 +2,9 @@ asyncio
 aiofiles
 adafruit-pca9685
 # web_gamepad
--e "..\WebGamepad\"
+#-e "..\WebGamepad\"
 -e .
-libpng>=1.2
-FreeType>=
+#libpng>=1.2
+#FreeType>=
 matplotlib==2.0.0
 numpy==1.12.0

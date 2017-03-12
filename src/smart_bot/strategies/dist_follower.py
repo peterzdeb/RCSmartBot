@@ -5,6 +5,7 @@ from smart_bot.strategies.base_strategy import BaseRobotStrategy
 from smart_bot.strategies.motorized_robot import MotorizedSteeringRobotStrategy
 
 
+trace_log = logging.getLogger('smart_bot.trace')
 logger = logging.getLogger(__name__)
 
 
@@ -23,40 +24,46 @@ class StickyDistFollower(BaseRobotStrategy):
     @asyncio.coroutine
     def recalculate_distances(self, distances):
         distances = distances[:3]
-        logger.debug('Recalc distances: %s', distances)
+        trace_log.debug('Recalc distances: %s', distances)
         self.log_data = {'dists': distances}
 
         min_dist = min(distances)
         max_dist = max(distances)
-        print(min_dist)
+        
+        if self.motor.stopped:
+            logger.info('IS STOPPED')
+            return
+        
         if min_dist < 10:
-            logger.info('Criticaly close to obstacle. Emergency stopping...')
+            logger.info('Criticaly close to obstacle (%s). Emergency stopping...', distances)
             yield from self.on_stop()
         elif min_dist < 20:
-            logger.info('Trying to overcome obstacle...')
+            logger.info('Trying to overcome obstacle (%s)...', distances)
             yield from self.__start_relocating(distances)
         elif min_dist < 100:
-            logger.info('Found a target to follow in %scm. Chasing...', 100)
+            logger.info('Found (at %s) a target to follow in %scm. Chasing...', 100, distances)
             yield from self.__start_following(distances)
         else:
-            logger.info('Nothing to follow. Stopping...')
+            logger.info('Nothing to follow (%s). Stopping...', distances)
         #        print("finish proc dists")
         yield from self.log()
 
     @asyncio.coroutine
     def __start_relocating(self, dists):
-        yield from self.on_stop()
+        #yield from self.on_stop()
+        trace_log.info('Relocating at %s', dists)
         
-        print("<><><><><><><><><><><><><><><>")
         if dists[0] < dists[2] and dists[2] >= 10:
+            trace_log.info('Relocating lefts at %s', dists)
             yield from self.on_left(progress=100)
         elif dists[0] >= dists[2] and dists[0] >= 10:
+            trace_log.info('Relocating rights at %s', dists)
             yield from self.on_right(progress=100)
-        yield from self.on_backward()
+        #yield from self.on_backward()
 
     @asyncio.coroutine
     def __start_following(self, dists):
-        print("Following: %s" % dists)
+        trace_log.info('Following object at %s', dists)
         if dists[2] <= dists[0] and dists[1] - dists[2] > 5:
             yield from self.on_right()
         elif dists[2] > dists[0] and dists[1] - dists[0] > 5:

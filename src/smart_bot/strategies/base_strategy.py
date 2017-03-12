@@ -2,6 +2,7 @@ import asyncio
 import logging
 
 
+trace_log = logging.getLogger('smart_bot.trace')
 logger = logging.getLogger(__name__)
 
 
@@ -29,13 +30,13 @@ class BaseRobotStrategy(object):
 
     @asyncio.coroutine
     def sensor_handler(self, name, data):
-        print('WARNING NotImplemented: Sensor "%s", data=%s' % (name, data))
+        trace_log.debug('WARNING NotImplemented: Sensor "%s", data=%s' % (name, data))
 
     @asyncio.coroutine
     def event_handler(self, **event_data):
         """ Must be implemented for each strategy """
         #TODO: move into WebGamepad package
-        logger.debug('Processing event: %s', str(event_data))
+        trace_log.debug('Processing event: %s', str(event_data))
         action = event_data.get('action')
         action_type = event_data.get('type')
 
@@ -58,7 +59,7 @@ class BaseRobotStrategy(object):
             if action in self.active_actions:
                 del self.active_actions[action]
                 yield from action_event(active=False)
-        print('keys: %s' % self.active_actions.keys())
+        trace_log.debug('Available keys state: %s' % self.active_actions.keys())
         return self.active_actions
 
     @asyncio.coroutine

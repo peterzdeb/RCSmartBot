@@ -31,13 +31,13 @@ class ServoDriver(object):
             self.pwm = MockPWM()
 
     def turn_right(self, progress=10):
-        step = progress / self.total_steps
+        step = (progress / 100) * self.total_steps
         logger.info('Servo: turning right (%d%%) - step %d', progress, step)
         self.step_position = int(min(self.max_position, self.step_position + step))
         self.pwm.set_pwm(self.__channel, 0, self.step_position)
 
     def turn_left(self, progress=10):
-        step = progress / self.total_steps
+        step = (progress / 100) * self.total_steps
         logger.info('Servo: turning left (%d%%) - step %d', progress, step)
         self.step_position = int(max(self.min_position, self.step_position - step))
         self.pwm.set_pwm(self.__channel, 0, self.step_position)

@@ -1,18 +1,26 @@
+import aiofiles
 import asyncio
 import json
-
-import aiofiles
+import logging
 
 from smart_bot.sensors.base_sensor import BaseSensorDevice
 
 
+trace_log = logging.getLogger('smart_bot.trace')
+logger = logging.getLogger(__name__)
+
 class SerialSensor(BaseSensorDevice):
     @asyncio.coroutine
     def setup(self):
-        self._fd = yield from aiofiles.open(self.sensor_address, 'rb')
+        try:
+            self._fd = yield from aiofiles.open(self.sensor_address, 'rb')
+        except FileNotFoundError as e:
+            logger.error('Failed to initialize Serial sensor(%s): %s', self.sensor_address, e)
 
     @asyncio.coroutine
     def read(self):
+        if not self._fd:
+            return []
         data = yield from self._fd.readline()
         print(data)
         data = data.decode('utf8', 'replace')
@@ -22,11 +30,11 @@ class SerialSensor(BaseSensorDevice):
         for record in data.split('\n'):
             if not record.strip():
                 continue
-            print("Reading JSON from serial sensor: %s" % record)
+            trace_log.debug("Reading JSON from serial sensor: %s", record)
             try:
                 data_dict = json.loads(record)
             except ValueError:
-                print("Skipping malformed data: %s", record)
+                trace_log.warning("Skipping malformed data: %s", record)
                 continue
             for sensor_type, records in data_dict.items():
                 measurements.append((sensor_type, list(records)))

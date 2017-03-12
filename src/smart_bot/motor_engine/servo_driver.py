@@ -27,7 +27,7 @@ class ServoDriver(object):
             self.pwm = PCA9685()
             self.pwm.set_pwm_freq(60)
         except Exception as e:
-            logger.exception('Failed to initialize Servo Driver: %s', e)
+            logger.error('Failed to initialize Servo Driver: %s', e)
             self.pwm = MockPWM()
 
     def turn_right(self, progress=10):

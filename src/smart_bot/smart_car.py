@@ -1,15 +1,16 @@
 import asyncio
-import logging
-
-from RPi import GPIO
 
 from web_gamepad.gamepad_server import WebGamepadServer
+
+import smart_bot.utils
 
 from smart_bot.log_config import setup_loggers
 from smart_bot.sensors.serial_sensor import SerialSensor
 from smart_bot.sensors.reader import SensorsReader
 from smart_bot import strategies
 from smart_bot.strategies.dist_follower import MotorizedSteeringDistFollower
+
+from RPi import GPIO
 
 
 if __name__ == '__main__':

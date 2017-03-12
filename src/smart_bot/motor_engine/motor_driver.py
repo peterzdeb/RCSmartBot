@@ -1,11 +1,11 @@
 #!/usr/bin/env python
 
-import RPi.GPIO as GPIO
 import asyncio
 import logging
 
-from web_gamepad.gamepad_server import WebGamepadServer
+import smart_bot.utils
 
+import RPi.GPIO as GPIO
 
 logger = logging.getLogger(__name__)
 

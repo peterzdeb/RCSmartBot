@@ -1,7 +1,7 @@
 import asyncio
 
 from smart_bot.motor_engine.motor_driver import MotorDriver, DualMotorDriver
-from motor_engine.servo_driver import ServoDriver
+from smart_bot.motor_engine.servo_driver import ServoDriver
 from smart_bot.strategies.base_strategy import BaseRobotStrategy
 
 

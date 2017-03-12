@@ -5,6 +5,7 @@ import os
 
 APP_LOG_LEVEL = logging.DEBUG
 OTHERS_LOG_LEVEL = logging.INFO
+TRACE_LOG_LEVEL = logging.INFO
 
 LOG_DIR = os.path.join(os.getcwd(), 'logs')
 
@@ -30,7 +31,6 @@ LOG_CONFIG = {
             'class': 'logging.handlers.RotatingFileHandler',
             'level': logging.getLevelName(OTHERS_LOG_LEVEL),
             'filename': os.path.join(LOG_DIR, 'robot_modules.log'),
-            'encoding': 'utf8',
             'maxBytes': 1024 * 1024 * 5,  # 5 MB
             'backupCount': 10,
             'formatter': 'default',
@@ -38,7 +38,6 @@ LOG_CONFIG = {
         'smart_bot': {
             'class': 'logging.handlers.RotatingFileHandler',
             'filename': os.path.join(LOG_DIR, 'smart_robot.log'),
-            'encoding': 'utf8',
             'maxBytes': 1024 * 1024 * 5,  # 5 MB
             'backupCount': 10,
             'formatter': 'default',
@@ -49,6 +48,11 @@ LOG_CONFIG = {
             'handlers': ['smart_bot', 'console'],
             'propagate': False,
             'level': APP_LOG_LEVEL
+        },
+        'smart_bot.trace': {
+            'handlers': ['smart_bot', 'console'],
+            'propagate': False,
+            'level': TRACE_LOG_LEVEL
         },
         'web_gamepad': {
             'handlers': ['smart_bot', 'console'],

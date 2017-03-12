@@ -1,5 +1,8 @@
 import asyncio
-import aiofiles
+import logging
+
+
+trace_log = logging.getLogger('smart_bot.trace')
 
 
 class SensorsReader(object):
@@ -13,16 +16,17 @@ class SensorsReader(object):
 
     @asyncio.coroutine
     def process_sensors(self):
-        print('sensors setup')
+        trace_log.info('Setting up %d sensors', len(self.sensors))
         for sensor in self.sensors:
             yield from sensor.setup()
 
         try:
             while True:
                 for sensor in self.sensors:
+                    trace_log.debug('Reading data from sensor: %s', sensor)
                     measurements = yield from sensor.read()
                     for sensor_type, data in measurements:
-                        print("Sensor callback %s (%s)" % (sensor_type, data))
+                        trace_log.debug("Sensor callback %s (%s)" % (sensor_type, data))
                         yield from self.reader_callback(sensor_type, data)
         finally:
             yield from self.stop()

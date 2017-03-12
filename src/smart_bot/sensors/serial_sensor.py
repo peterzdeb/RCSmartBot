@@ -22,7 +22,7 @@ class SerialSensor(BaseSensorDevice):
         if not self._fd:
             return []
         data = yield from self._fd.readline()
-        print(data)
+        trace_log.debug('Got data from serial sensor: %s', data)
         data = data.decode('utf8', 'replace')
         data = data.replace("'", '"').replace('}{', "}\n{")
         

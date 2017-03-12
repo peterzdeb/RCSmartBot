@@ -1,11 +1,12 @@
 #! /usr/bin/python
 
 import asyncio
-import numpy as np
-import RPi.GPIO as GPIO
 import time
 
-from .base_sensor import BaseSensorDevice
+import numpy as np
+import RPi.GPIO as GPIO
+
+from smart_bot.sensors.base_sensor import BaseSensorDevice
 
 
 class GPIODistance(BaseSensorDevice):

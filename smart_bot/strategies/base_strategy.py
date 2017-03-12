@@ -1,25 +1,30 @@
 import asyncio
+import logging
+
+
+logger = logging.getLogger(__name__)
 
 
 class BaseRobotStrategy(object):
 
     def __init__(self):
+        logger.info('Initializing %s strategy', self.__class__.__name__)
         self.active_actions = {}
         self.log_data = {}
 
     def on_stop(self, active=True):
         pass
 
-    def on_forward(self, active=True):
+    def on_forward(self, active=True, progress=None):
         pass
 
-    def on_backward(self, active=True):
+    def on_backward(self, active=True, progress=None):
         pass
 
-    def on_left(self, active=True):
+    def on_left(self, active=True, progress=None):
         pass
 
-    def on_right(self, active=True):
+    def on_right(self, active=True, progress=None):
         pass
 
     @asyncio.coroutine
@@ -30,6 +35,7 @@ class BaseRobotStrategy(object):
     def event_handler(self, **event_data):
         """ Must be implemented for each strategy """
         #TODO: move into WebGamepad package
+        logger.debug('Processing event: %s', str(event_data))
         action = event_data.get('action')
         action_type = event_data.get('type')
 

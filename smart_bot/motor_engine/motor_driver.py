@@ -7,7 +7,7 @@ import logging
 from web_gamepad.gamepad_server import WebGamepadServer
 
 
-logger = logging.getLogger()
+logger = logging.getLogger(__name__)
 
 GPIO.setmode(GPIO.BOARD)
 

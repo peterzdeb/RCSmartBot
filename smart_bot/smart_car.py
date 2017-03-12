@@ -1,21 +1,20 @@
 import asyncio
 import logging
 
+from RPi import GPIO
+
 from web_gamepad.gamepad_server import WebGamepadServer
 
-from RPi import GPIO
-from sensors.distance import GPIODistance
-from sensors.serial_sensor import SerialSensor
-from sensors.reader import SensorsReader
-import strategies
-from strategies.dist_follower import StickyDistFollower
+from smart_bot.log_config import setup_loggers
+from smart_bot.sensors.serial_sensor import SerialSensor
+from smart_bot.sensors.reader import SensorsReader
+from smart_bot import strategies
+from smart_bot.strategies.dist_follower import MotorizedSteeringDistFollower
 
 
 if __name__ == '__main__':
-    logging.basicConfig(level=logging.DEBUG,
-                        format='%(asctime)s %(name)s %(levelname)s %(module)s.%(funcName)s %(message)s')
-
-    strategy = strategies.select_strategy(StickyDistFollower)
+    setup_loggers()
+    strategy = strategies.select_strategy(MotorizedSteeringDistFollower)
 
     DISTANCE_SENSORS = [
         (37, 35),

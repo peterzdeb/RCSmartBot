@@ -1,8 +1,9 @@
-import aiofiles
 import asyncio
 import json
 
-from .base_sensor import BaseSensorDevice
+import aiofiles
+
+from smart_bot.sensors.base_sensor import BaseSensorDevice
 
 
 class SerialSensor(BaseSensorDevice):

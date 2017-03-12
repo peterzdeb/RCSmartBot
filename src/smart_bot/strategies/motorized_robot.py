@@ -98,6 +98,7 @@ class MotorizedSteeringRobotStrategy(BaseRobotStrategy):
     def on_left(self, active=True, progress=None):
         if active:
             self.turning_left = True
+            self.turning_right = False
             self.loop.create_task(self.steer_left(progress))
         else:
             self.turning_left = False
@@ -106,6 +107,7 @@ class MotorizedSteeringRobotStrategy(BaseRobotStrategy):
     def on_right(self, active=True, progress=None):
         if active:
             self.turning_right = True
+            self.turning_left = False
             self.loop.create_task(self.steer_right(progress))
         else:
             self.turning_right = False

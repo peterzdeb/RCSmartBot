@@ -122,6 +122,8 @@ class MotorizedSteeringRobotStrategy(BaseRobotStrategy):
 
         while self.turning_left:
             self.steer.turn_left(steps_pct)
+            if steps_pct == 100:
+                break
             #step += step
             yield from asyncio.sleep(self.steering_tick)
 
@@ -130,5 +132,7 @@ class MotorizedSteeringRobotStrategy(BaseRobotStrategy):
         steps_pct = progress or self.initial_step
         while self.turning_right:
             self.steer.turn_right(steps_pct)
+            if steps_pct == 100:
+                break
             #step += step
             yield from asyncio.sleep(self.steering_tick)
